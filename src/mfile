@@ -219,8 +219,11 @@ CH=CheckCompile.cpp GenConfigInfo.cpp CheckContract.cpp CheckContractAux.cpp \
 AUXPROGS = TestGetTime TestGetPID CheckFeatures CheckCompile GenConfigInfo CheckContract \
 	CheckThreads
 
-FEATURES=ALIGNED_ARRAY BUILTIN_CLZL LL_TYPE SSSE3 AVX PCLMUL AVX2 FMA AVX512F \
-	COPY_TRAITS1 COPY_TRAITS2 CHRONO_TIME MACOS_TIME POSIX_TIME
+#FEATURES=ALIGNED_ARRAY BUILTIN_CLZL LL_TYPE SSSE3 AVX PCLMUL AVX2 FMA AVX512F \
+#	COPY_TRAITS1 COPY_TRAITS2 CHRONO_TIME MACOS_TIME POSIX_TIME
+
+FEATURES=ALIGNED_ARRAY BUILTIN_CLZL LL_TYPE PCLMUL FMA COPY_TRAITS1 COPY_TRAITS2 CHRONO_TIME
+
 
 
 # documentation
@@ -304,7 +307,9 @@ COMPILE = $(CXX) $(NTL_INCLUDE) $(CPPFLAGS) $(CXXFLAGS) $(CXXAUTOFLAGS)  -c
 
 LINK = $(CXX) $(NTL_INCLUDE) $(CPPFLAGS) $(CXXFLAGS) $(CXXAUTOFLAGS) $(LDFLAGS)
 
+COMPILE_NATIVE = $(patsubst em++,clang++,$(COMPILE))
 
+LINK_NATIVE = $(patsubst em++,clang++,$(LINK))
 
 # 'make' or 'make all' does a complete make, including additional
 # setup not done in configure.
@@ -331,8 +336,8 @@ setup-phase: need-to-run-configure
 # setup1 generates the file ../incluse/NTL/mach_desc.h
 
 setup1: 
-	$(COMPILE) MakeDescAux.cpp
-	$(LINK) -o MakeDesc MakeDesc.cpp MakeDescAux.o $(LDLIBS)
+	$(COMPILE_NATIVE) MakeDescAux.cpp
+	$(LINK_NATIVE) -o MakeDesc MakeDesc.cpp MakeDescAux.o $(LDLIBS)
 	./MakeDesc
 	mv mach_desc.h ../include/NTL/mach_desc.h
 
@@ -343,7 +348,7 @@ setup2:
 	echo "*** CheckFeatures log ***" > CheckFeatures.log
 	sh MakeGetTime "$(LINK)" "$(LDLIBS)"
 	sh MakeGetPID  "$(LINK)" "$(LDLIBS)"
-	sh MakeCheckFeatures "$(FEATURES)" "$(LINK)" "$(LDLIBS)"
+	sh MakeCheckFeatures "$(FEATURES)" "$(LINK_NATIVE)" "$(LDLIBS)"
 
 # NOTE: to add a feature XXX:
 #   * add a program CheckXXX.cpp which returns 0 if XXX works, -1 otherwise
@@ -356,9 +361,10 @@ setup2:
 # This also checks that the right version of gf2x library.
 
 setup3:
-	$(LINK) $(GMP_OPT_INCDIR) -o gen_gmp_aux gen_gmp_aux.cpp $(GMP_OPT_LIBDIR) $(GMP_OPT_LIB) $(LDLIBS)
+	#$(LINK_NATIVE) $(GMP_OPT_INCDIR) -o gen_gmp_aux gen_gmp_aux.cpp $(GMP_OPT_LIBDIR) $(GMP_OPT_LIB) $(LDLIBS)
+	$(LINK_NATIVE) -I/usr/local/Cellar/gmp/6.1.2_2/include -o gen_gmp_aux gen_gmp_aux.cpp -L/usr/local/Cellar/gmp/6.1.2_2/lib /usr/local/Cellar/gmp/6.1.2_2/lib/libgmp.a $(LDLIBS)
 	./gen_gmp_aux > ../include/NTL/gmp_aux.h 
-	$(LINK) $(GF2X_OPT_INCDIR) -o gf2x_version_1_2_or_later_required gf2x_version_1_2_or_later_required.cpp $(GF2X_OPT_LIBDIR) $(GF2X_OPT_LIB) $(LDLIBS) 
+	$(LINK_NATIVE) $(GF2X_OPT_INCDIR) -o gf2x_version_1_2_or_later_required gf2x_version_1_2_or_later_required.cpp $(GF2X_OPT_LIBDIR) $(GF2X_OPT_LIB) $(LDLIBS)
 
 # setup4 runs the wizard
 
@@ -368,8 +374,8 @@ setup4:
 
 ntl.a:	$(OBJ) 
 @{LSTAT}	$(AR) $(ARFLAGS) ntl.a $(OBJ) #LSTAT
-@{LSTAT}	- $(RANLIB) ntl.a #LSTAT
-@{LSHAR}	$(LIBTOOL) --tag=CXX --mode=link $(LINK) $(LIBTOOL_LINK_FLAGS) -o libntl.la $(OBJ:.o=.lo) $(GMP_OPT_LIBDIR) $(GMP_OPT_LIB) $(GF2X_OPT_LIBDIR) $(GF2X_OPT_LIB) $(LDLIBS) $(LIBTOOL_LINK_LIBS) -rpath $(LIBDIR) -version-info `cat VERSION_INFO` #LSHAR
+#@{LSTAT}	- $(RANLIB) ntl.a #LSTAT
+#@{LSHAR}	$(LIBTOOL) --tag=CXX --mode=link $(LINK) $(LIBTOOL_LINK_FLAGS) -o libntl.la $(OBJ:.o=.lo) $(GMP_OPT_LIBDIR) $(GMP_OPT_LIB) $(GF2X_OPT_LIBDIR) $(GF2X_OPT_LIB) $(LDLIBS) $(LIBTOOL_LINK_LIBS) -rpath $(LIBDIR) -version-info `cat VERSION_INFO` #LSHAR
 
 @{LSTAT}LCOMP= #LSTAT
 @{LSHAR}LCOMP=$(LIBTOOL) --tag=CXX --mode=compile #LSHAR
@@ -387,16 +393,16 @@ pd_FFT.o: pd_FFT.cpp
 	$(LCOMP) $(COMPILE) $(NOCONTRACT) pd_FFT.cpp
 
 CheckCompile: CheckCompile.cpp
-	$(LINK) -o  CheckCompile CheckCompile.cpp $(LDLIBS)
+	$(LINK_NATIVE) -o  CheckCompile CheckCompile.cpp $(LDLIBS)
 
 GenConfigInfo: GenConfigInfo.cpp
-	$(LINK) -o  GenConfigInfo GenConfigInfo.cpp $(LDLIBS)
+	$(LINK_NATIVE) -o  GenConfigInfo GenConfigInfo.cpp $(LDLIBS)
 
 CheckContract: CheckContract.cpp CheckContractAux.cpp
-	$(LINK) $(NOCONTRACT) -o  CheckContract CheckContract.cpp CheckContractAux.cpp $(LDLIBS)
+	$(LINK_NATIVE) $(NOCONTRACT) -o  CheckContract CheckContract.cpp CheckContractAux.cpp $(LDLIBS)
 
 CheckThreads: CheckThreads.cpp
-	$(LINK) -o  CheckThreads CheckThreads.cpp $(LDLIBS)
+	$(LINK_NATIVE) -o  CheckThreads CheckThreads.cpp $(LDLIBS)
 
 
 .cpp.o: 

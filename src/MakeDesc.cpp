@@ -1220,6 +1220,7 @@ int main()
    print2k(f, dp-1, bpl);
    fprintf(f, "\n");
 
+   ldp = 0;
 
    if (ldp) {
       fprintf(f, "#define NTL_LONGDOUBLE_OK (1)\n"); 

@@ -251,7 +251,7 @@ inline void swap(int& a, int& b)  {  int t;  t = a; a = b; b = t; }
 // some convenience casting routines:
 
 inline unsigned long cast_unsigned(long a) { return (unsigned long) a; }
-inline unsigned int cast_unsigned(int a) { return (unsigned int) a; }
+//inline unsigned int cast_unsigned(int a) { return (unsigned int) a; }
 
 
 // these routines respect the NTL_CLEAN_INT flag: if set,

@@ -587,7 +587,7 @@ inline ZZX& operator%=(ZZX& x, const ZZX& b)
 void MulMod(ZZX& x, const ZZX& a, const ZZX& b, const ZZX& f);
 
 inline ZZX MulMod(const ZZX& a, const ZZX& b, const ZZX& f)
-   { ZZX x; MulMod(x, a, b, f); NTL_OPT_RETURN(ZZX, x); }
+   {ZZX x; MulMod(x, a, b, f); NTL_OPT_RETURN(ZZX, x); }
 
 void SqrMod(ZZX& x, const ZZX& a, const ZZX& f);
 

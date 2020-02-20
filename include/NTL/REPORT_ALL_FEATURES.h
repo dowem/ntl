@@ -11,28 +11,12 @@
    std::cerr << "NTL_HAVE_LL_TYPE\n";
 #endif
 
-#ifdef NTL_HAVE_SSSE3
-   std::cerr << "NTL_HAVE_SSSE3\n";
-#endif
-
-#ifdef NTL_HAVE_AVX
-   std::cerr << "NTL_HAVE_AVX\n";
-#endif
-
 #ifdef NTL_HAVE_PCLMUL
    std::cerr << "NTL_HAVE_PCLMUL\n";
 #endif
 
-#ifdef NTL_HAVE_AVX2
-   std::cerr << "NTL_HAVE_AVX2\n";
-#endif
-
 #ifdef NTL_HAVE_FMA
    std::cerr << "NTL_HAVE_FMA\n";
-#endif
-
-#ifdef NTL_HAVE_AVX512F
-   std::cerr << "NTL_HAVE_AVX512F\n";
 #endif
 
 #ifdef NTL_HAVE_COPY_TRAITS1
@@ -45,13 +29,5 @@
 
 #ifdef NTL_HAVE_CHRONO_TIME
    std::cerr << "NTL_HAVE_CHRONO_TIME\n";
-#endif
-
-#ifdef NTL_HAVE_MACOS_TIME
-   std::cerr << "NTL_HAVE_MACOS_TIME\n";
-#endif
-
-#ifdef NTL_HAVE_POSIX_TIME
-   std::cerr << "NTL_HAVE_POSIX_TIME\n";
 #endif
 
