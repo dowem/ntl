@@ -14,7 +14,8 @@ system("echo '*** CompilerOutput.log ***' > CompilerOutput.log");
 %MakeVal = (
 
 'CXX'	      => 'g++',
-'CXXFLAGS'    => '-g -O2',
+'CXXFLAGS_'    => '-g -O2',
+'CXXFLAGS_NATIVE'    => '-g -O2',
 'CXXAUTOFLAGS'=> '',
 'NOCONTRACT'  => '',
 'AR'	      => 'ar',
@@ -149,15 +150,15 @@ foreach $arg (@ARGV) {
 
 # warn against -O3, -Ofast, -ffast-math
 
-if ($MakeVal{'CXXFLAGS'} =~ '-O3') {
+if ($MakeVal{'CXXFLAGS_'} =~ '-O3') {
    Warning("-O3 flag may yield incorrect code");
 }
 
-if ($MakeVal{'CXXFLAGS'} =~ '-Ofast') {
+if ($MakeVal{'CXXFLAGS_'} =~ '-Ofast') {
    Warning("-Ofast flag may yield incorrect code");
 }
 
-if ($MakeVal{'CXXFLAGS'} =~ '-ffast-math') {
+if ($MakeVal{'CXXFLAGS_'} =~ '-ffast-math') {
    Warning("-ffast-math flag may yield incorrect code");
 }
 
@@ -171,7 +172,7 @@ if ($ConfigFlag{'NTL_THREADS'} eq 'off') {
 
 # special processing: CXXFLAGS contains '-march=' => NATIVE=off
 
-if ($MakeVal{'CXXFLAGS'} =~ '-march=') {
+if ($MakeVal{'CXXFLAGS_'} =~ '-march=') {
    $MakeFlag{'NATIVE'} = 'off';
 }
 
@@ -441,7 +442,7 @@ sub GenFiles {
    foreach $name (sort keys %MakeSub) {
       print HFILEOUT "$name=\"$MakeSub{$name}\"\n";
    }
-   #print HFILEOUT "CXXFLAGS=\"$MakeSub{'CXXFLAGS'}\"\n";
+   #print HFILEOUT "CXXFLAGS_=\"$MakeSub{'CXXFLAGS_'}\"\n";
    #print HFILEOUT "CXXAUTOFLAGS=\"$MakeSub{'CXXAUTOFLAGS'}\"\n";
    #print HFILEOUT "NOCONTRACT=\"$MakeSub{'NOCONTRACT'}\"\n";
 
