@@ -1,4 +1,4 @@
-###############################################################
+a###############################################################
 #
 #  First, choose a C++ compiler, and set compiler flags.
 #  This is done by setting the variables CXX and CXXFLAGS.
@@ -366,7 +366,7 @@ setup2:
 
 setup3:
 	#$(LINK_NATIVE) $(GMP_OPT_INCDIR) -o gen_gmp_aux gen_gmp_aux.cpp $(GMP_OPT_LIBDIR) $(GMP_OPT_LIB) $(LDLIBS)
-	$(LINK_NATIVE) -I/usr/local/Cellar/gmp/6.1.2_2/include -o gen_gmp_aux gen_gmp_aux.cpp -L/usr/local/Cellar/gmp/6.1.2_2/lib /usr/local/Cellar/gmp/6.1.2_2/lib/libgmp.a $(LDLIBS)
+        $(LINK_NATIVE) -I$(GMP_INCDIR) -o gen_gmp_aux gen_gmp_aux.cpp -L$(GMP_LIBDIR) $(GMP_LIBDIR)/libgmp.a $(LDLIBS)
 	./gen_gmp_aux > ../include/NTL/gmp_aux.h 
 	$(LINK_NATIVE) $(GF2X_OPT_INCDIR) -o gf2x_version_1_2_or_later_required gf2x_version_1_2_or_later_required.cpp $(GF2X_OPT_LIBDIR) $(GF2X_OPT_LIB) $(LDLIBS)
 
